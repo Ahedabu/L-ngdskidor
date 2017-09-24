@@ -10,17 +10,16 @@
    
     <div class="row col-sm-4">
         <h2 class="header">VÄLJ RÄTT LÄNGDSKIDOR</h2>
-        
             <form asp-controller="Home" asp-action="Index" method="post" role="form">
                 <div class="form-group form-inline">
-                      <label class="control-label">Ditt Länged</label>
-                    <input class="form-control"  id="length" asp-for="Length" step="any" type="number" placeholder="Ditt Länged" required="required" data-val="true" data-val-required="The length field is required."/> <span>cm</span>
-                    @Html.ValidationMessageFor(model => model.Length,"", new { @class = "text-danger" })
+                      <label class="control-label">Ditt Länged: </label>
+                      <input class="form-control"  id="length" asp-for="Length" step="any" type="number" data-placeholder="Ditt Länged" required="required" value="" data-val-required="The length field is required."/> <span>cm</span>
                 </div>
-                <div class="form-group form-inline">
+                <div class="form-group">@Html.ValidationMessageFor(model => model.Length, "", new { @class = "text-danger" })</div>
+                <div class="form-group form-inline row">
                     <div class="checkbox-inline">
                         <label class="control-label">
-                            @Html.CheckBoxFor(m => m.Barn04, new { @id = "barn04" }) Barn 0-4
+                            &nbsp;&nbsp;&nbsp;&nbsp;@Html.CheckBoxFor(m => m.Barn04, new { @id = "barn04" }) Barn 0-4
                         </label>
                     </div>
                     <div class="checkbox-inline">
@@ -34,29 +33,31 @@
                         </label>
                     </div>
                 </div>
-                <div class="form-group form-inline">
-                    <label class="control-label">Din Ålder</label>
-                    <input class="form-control age" id="age" asp-for="Age" type="number" step="any" placeholder="Din Ålder" disabled/> <span>år</span>
-                    @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <span id="validationMessage" style="color:#a94442;" hidden>You must choose one of this checkbox.</span>
                 </div>
                 <div class="form-group form-inline">
-                    <div><label>Typ</label></div>
+                    <label class="control-label">Din Ålder: </label>
+                    &nbsp; &nbsp; <input class="form-control age" id="age" asp-for="Age" type="number" value="" step="any" placeholder="Din Ålder" disabled/> <span>år</span>
+                </div>
+                <div class="form-group">@Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })</div>
+                <div class="form-group form-inline">
+                    <div><label>Typ: </label></div>
                     <div class="radio">
-                        <label class="control-label">@Html.RadioButtonFor(m => m.IsKlass,true)
+                        <label class="control-label">@Html.RadioButtonFor(m => m.IsKlass, true)
                         Klassisk
                         </label>
                     </div>
                     <div class="radio">
-                        <label class="control-label">@Html.RadioButtonFor(m => m.IsKlass,false)
+                        <label class="control-label">@Html.RadioButtonFor(m => m.IsKlass, false)
                          Fristil
                         </label>
                     </div>
                     </div>
                 <div class="form-group">
-                    <button class="btn btn-info" type="submit" name="submit">Välj</button>
+                    <button class="btn btn-info" type="submit" name="submit" onclick="ValidateCheckbox();">Välj</button>
                 </div>
              </form>
-        
         </div>
     <div class="row col-sm-4 bgbox">
         <img class="img-responsive" src="~/images/fischer-e99-crown-xtralite.jpeg" style="height: 300px; width:300px; opacity: 1; padding:0px;" />
@@ -68,39 +69,97 @@
         </div>
         <div class="contents">
             <div class="row">
-                <label class="quote__heading ">Ditt Länged: </label>
-                <label>@Model.Length</label>
-            </div>
+                <label class="quote__heading ">Länged: </label>
+                @{
+                    //To avoid the value 0
+                    if (Model.Length > 0)
+                    { <label>@Model.Length</label> } 
+                    
+                 }
+
+             </div>
             <div class="row">
-                <label class="quote__heading ">Din Ålder: </label>
-                <label>@Model.Age</label>
+                <label class="quote__heading ">Ålder: </label>
+                
+                @{
+
+                    //To avoid the value 0
+                    if (Model.Age > 0)
+                    {
+                        <label>@Model.Age</label>
+
+                    }
+
+                    if (Model.Barn04 == true)
+                    {
+                        <span> Barn 0 - 4</span>
+
+                    }
+                    else if (Model.Barn58 == true)
+                    {
+                        <span>Barn 5 - 8</span>
+                    }
+
+                 }
             </div>
             <div class="row">
                 <label class="quote__heading ">Beräkning av skidlängd: </label>
-                <label>@Model.Skidlangd</label>
+                @{
+                    //To avoid the value 0
+                    if (Model.Skidlangd > 0)
+                    { <label> @Model.Skidlangd </label>}
+                 }
                 <label style="color:green;">@Model.Info</label>
-              
-            </div>
+
+           </div>
         </div>
     </div>
    
 </div>
 
 <script>
+
+    //Make sure if one from check boxes group active and other disable
     document.getElementById('barn04').onchange = function () {
         document.getElementById('age').disabled = this.checked;
         document.getElementById('agemor8').disabled = this.checked;
         document.getElementById('barn58').disabled = this.checked;
     };
+
     document.getElementById('agemor8').onchange = function () {
         document.getElementById('age').disabled = !this.checked;
         document.getElementById('barn04').disabled = this.checked;
         document.getElementById('barn58').disabled = this.checked;
     };
+
     document.getElementById('barn58').onchange = function () {
         document.getElementById('age').disabled = this.checked;
         document.getElementById('barn04').disabled = this.checked;
         document.getElementById('agemor8').disabled = this.checked;
     };
+    
+
+    //validation for checkboxes
+    function ValidateCheckbox() {
+        if ($('#barn58').is(":checked") || $('#barn04').is(":checked") || $('#agemor8').is(":checked"))
+        {
+
+            $("#validationMessage").hide();
+           
+        } else {
+
+            $("#validationMessage").show();
+
+        }
+
+        return false;
+
+    }
+    
+    
         
 </script>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

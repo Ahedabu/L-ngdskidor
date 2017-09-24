@@ -9,8 +9,9 @@ namespace Längdskidor.Models
 {
     public class skidor
     {
-        [Range(1, 300, ErrorMessage = "Length must be between 1 and 300")]
+        [Range(1, 187, ErrorMessage = "Length must be between 1 and 187")]
         [Required(ErrorMessage = "The Length is required")]
+        [Display(Prompt = "Ditt länged")]
         public float Length { get; set; }
 
         [Range(8, 200)]

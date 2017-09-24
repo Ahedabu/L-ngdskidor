@@ -35,6 +35,7 @@ namespace Längdskidor.Controllers
                 skidor.Info = "Kroppslängd från " + skidor.Skidlangd +" till " + maxSkidlangd;
 
             }
+
             //age has to be more than 8 years 
             else if (skidor.Age > 8 && skidor.IsKlass == true && skidor.Length <= 207)
             {
@@ -45,15 +46,16 @@ namespace Längdskidor.Controllers
             {
                 skidor.Info = "Klassiska skidor tillverkas bara till längder upp till 207cm.";
 
-            }
-
-            else if (skidor.Age > 8 && skidor.IsKlass == false)
+            } else if (skidor.Age > 8 && skidor.IsKlass == false && skidor.Length > 10)
             {
                 skidor.Skidlangd = skidor.Length + 10;
                 var maxSkidlangd = skidor.Skidlangd + 15;
                 skidor.Info = "Kroppslängd från " + skidor.Skidlangd + " till " + maxSkidlangd + " Enligt tävlingsreglerna får inte skidan understiga kroppslängden med mer än 10cm.";
                 
-
+            }else if(skidor.Length < 10 && skidor.IsKlass == false)
+            {
+                skidor.Info = "Enligt tävlingsreglerna får inte skidan understiga kroppslängden med mer än 10cm.";
+            
             }
 
             return View(skidor);
